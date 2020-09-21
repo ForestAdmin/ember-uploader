@@ -112,6 +112,8 @@ export default EmberObject.extend(Evented, {
    * and sets isUploading to false
    *
    * @param {object} data Object of data supplied to the didUpload event
+   * @param {object} status Status of the request
+   * @param {object} xhr XMLHttpRequest instance for this request
    * @return {object} Returns the given data
    */
   didUpload (data, status, xhr) {
