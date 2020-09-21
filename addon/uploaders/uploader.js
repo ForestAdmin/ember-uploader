@@ -117,10 +117,18 @@ export default EmberObject.extend(Evented, {
   didUpload (data, status, xhr) {
     set(this, 'isUploading', false);
     this.trigger('didUpload', data);
+
+    const headers = {};
+    xhr
+      .getAllResponseHeaders().trim().split(/[\r\n]+/)
+      .map((header) => {
+        const [key, value] = header.split(': ');
+        headers[key] = value;
+      }),
     this.trigger('didUpload.withHeaders',
       {
         data,
-        headers: xhr.getAllResponseHeaders(),
+        headers,
         status,
         xhr
       });
