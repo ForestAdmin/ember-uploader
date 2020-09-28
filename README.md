@@ -98,6 +98,7 @@ uploader.on('didUpload', e => {
 ```js
 uploader.on('didUpload.withHeaders', e => {
   // Handle finished upload
+  // Use `e.data`, `e.headers`, `e.status` and `e.xhr` as needed
 });
 ```
 
