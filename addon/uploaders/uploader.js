@@ -123,7 +123,7 @@ export default EmberObject.extend(Evented, {
     const headers = {};
     xhr
       .getAllResponseHeaders().trim().split(/[\r\n]+/)
-      .map((header) => {
+      .forEach((header) => {
         const [key, value] = header.split(': ');
         headers[key] = value;
       }),
