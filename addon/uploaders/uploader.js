@@ -108,14 +108,32 @@ export default EmberObject.extend(Evented, {
   },
 
   /**
-   * Triggers didUpload event with given params and sets isUploading to false
+   * Triggers didUpload and didUpload.withHeaders events with given params
+   * and sets isUploading to false
    *
    * @param {object} data Object of data supplied to the didUpload event
+   * @param {object} status Status of the request
+   * @param {object} xhr XMLHttpRequest instance for this request
    * @return {object} Returns the given data
    */
-  didUpload (data) {
+  didUpload (data, status, xhr) {
     set(this, 'isUploading', false);
     this.trigger('didUpload', data);
+
+    const headers = {};
+    xhr
+      .getAllResponseHeaders().trim().split(/[\r\n]+/)
+      .forEach((header) => {
+        const [key, value] = header.split(': ');
+        headers[key] = value;
+      }),
+    this.trigger('didUpload.withHeaders',
+      {
+        data,
+        headers,
+        status,
+        xhr
+      });
     return data;
   },
 
@@ -210,8 +228,8 @@ export default EmberObject.extend(Evented, {
    */
   ajaxPromise (settings) {
     return new Promise((resolve, reject) => {
-      settings.success = (data) => {
-        run(null, resolve, this.didUpload(data));
+      settings.success = (data, status, xhr) => {
+        run(null, resolve, this.didUpload(data, status, xhr));
       };
 
       settings.error = (jqXHR, responseText, errorThrown) => {
